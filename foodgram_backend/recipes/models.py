@@ -1,7 +1,8 @@
 from django.conf import settings
+from typing import Optional
+
 from django.db import models
-from django.core.validators import RegexValidator
-from django_extensions.validators import HexValidator
+from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -24,12 +25,7 @@ class Tag(models.Model):
     slug = models.CharField(
         max_length=settings.MAX_SLUG_LENGTH,
         unique=True,
-        validators=[
-            RegexValidator( 
-                regex=r'^[-a-zA-Z0-9_]+$',
-                message='Введите верный слаг',
-            ),
-        ],
+        null=True,
         verbose_name='Cлаг'
     )
 
@@ -99,7 +95,7 @@ class Recipe(models.Model):
         default=settings.MIN_COOK_TIME,
         verbose_name='Время приготовления'
     )
-
+    
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
@@ -119,13 +115,11 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorited',
-        verbose_name='Любимые рецепты',
+        related_name='favorites',
+        verbose_name='Рецепт',
     )
 
     class Meta:
-        verbose_name = 'Любимый рецепт'
-        verbose_name_plural = 'Любимые рецепты'
         ordering = ('id',)
         constraints = [
             models.UniqueConstraint(
@@ -156,7 +150,12 @@ class ShoppingCart(models.Model):
         verbose_name = 'Рецепт в списке покупок'
         verbose_name_plural = 'Рецепты в списке покупок'
         ordering = ('id',)
-        unique_together = ('user', 'recipe')
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_cart_user_recipe'
+            )
+        ]
 
     def __str__(self) -> str:
         return f'{self.recipe} в корзине {self.user}'
@@ -183,8 +182,18 @@ class RecipeIngredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецептов'
-        unique_together = ('recipe', 'ingredient')
 
     def __str__(self) -> str:
         return f'{self.ingredient} для {self.recipe}'
 
+
+class RecipeQuerySet(models.QuerySet):
+
+    def add_user_annotations(self, user_id: Optional[int]):
+        return self.annotate(
+            is_favorite=Exists(
+                Favorite.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+        )

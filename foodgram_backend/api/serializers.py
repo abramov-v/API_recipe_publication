@@ -1,17 +1,28 @@
 from rest_framework import serializers
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, RecipeIngredient
+from users.models import Subscription
 
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
+
 class UserSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
+    def get_is_subscribed(self, value):
+        user = self.context['request'].user
+        return user.is_authenticated and Subscription.objects.filter(
+            user=user,
+            author=value
+        ).exists()
+
     class Meta:
         model = User
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed',)
-
 
 class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для модели тегов."""

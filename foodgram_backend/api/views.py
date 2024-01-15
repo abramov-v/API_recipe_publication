@@ -9,7 +9,7 @@ from api.serializers import (RecipeListSerializer,
                              TagSerializer, IngredientSerializer)
 from recipes.models import Recipe, Tag, Ingredient
 
-
+from users.models import Subscription
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import UserSerializer
@@ -29,6 +29,8 @@ class CustomUserViewSet(UserViewSet):
 
     Там все, что нам нужно. CRUD + action me и прочее. См. исходники.
     """
+    serializer_class = UserSerializer
+    pagination_class = CustomPagination
 
 
 class RecipesViewSet(ModelViewSet):
@@ -61,12 +63,6 @@ class TagViewSet(ReadOnlyModelViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
     pagination_class = None
-
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

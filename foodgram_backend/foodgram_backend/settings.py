@@ -117,7 +117,8 @@ DJOSER = {
     'PERMISSIONS': {
         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
-    }
+    },
+    'user': 'api.serializers.UserSerializer'
 }
 
 MAX_LENGTH_NAME = 200
@@ -133,21 +134,3 @@ MAX_LENGTH_MEASURING_UNIT = 200
 MAX_LENGTH_RECIPE_TEXT = 500
 
 MIN_COOK_TIME = 1
-
-
-TEMPLATES_DIR = BASE_DIR / 'docs'
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'docs')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
