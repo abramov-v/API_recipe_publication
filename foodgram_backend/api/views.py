@@ -1,19 +1,25 @@
 from djoser.views import UserViewSet
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.decorators import action
+from rest_framework.permissions import (SAFE_METHODS, AllowAny,
+                                        IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 
 from api.permissions import IsOwnerOrReadOnly
 from api.serializers import (RecipeListSerializer,
                              RecipeCreateUpdateSerializer,
-                             TagSerializer, IngredientSerializer)
+                             TagSerializer, IngredientSerializer, UserSerializer)
 from recipes.models import Recipe, Tag, Ingredient
 
 from users.models import Subscription
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from .serializers import UserSerializer
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from api.filters import IngredientSearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 User = get_user_model()
 
@@ -25,13 +31,11 @@ class CustomPagination(PageNumberPagination):
 
 
 class CustomUserViewSet(UserViewSet):
-    """Api для работы с пользователями.
-
-    Там все, что нам нужно. CRUD + action me и прочее. См. исходники.
-    """
-    serializer_class = UserSerializer
+    """Api для работы с пользователями."""
     pagination_class = CustomPagination
-
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
 
 class RecipesViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
@@ -65,7 +69,9 @@ class TagViewSet(ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
     pagination_class = None
+    filter_backends = (DjangoFilterBackend, IngredientSearchFilter,)
+    search_fields = ('^name',)
