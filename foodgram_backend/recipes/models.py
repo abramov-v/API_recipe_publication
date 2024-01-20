@@ -59,6 +59,18 @@ class Ingredient(models.Model):
         return f'{self.name} ({self.measurement_unit})'
 
 
+class RecipeQuerySet(models.QuerySet):
+
+    def add_user_annotations(self, user_id: Optional[int]):
+        return self.annotate(
+            is_favorite=Exists(
+                Favorite.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+        )
+
+
 class Recipe(models.Model):
     """Модель представляет рецепт блюда."""
 
@@ -73,8 +85,10 @@ class Recipe(models.Model):
         verbose_name='Название блюда',
     )
     image = models.ImageField(
-        upload_to='food_image/',
-        verbose_name='Картинка блюда'
+        upload_to='recipes/',
+        verbose_name='Картинка блюда',
+        null=True,
+        blank=True
     )
     text = models.TextField(
         max_length=settings.MAX_LENGTH_RECIPE_TEXT,
@@ -88,14 +102,15 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name='recipes',
         verbose_name='Список тегов'
     )
     cooking_time = models.PositiveSmallIntegerField(
         default=settings.MIN_COOK_TIME,
         verbose_name='Время приготовления'
     )
-    
+ 
+    objects = RecipeQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
@@ -120,6 +135,8 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Объект избранного'
+        verbose_name_plural = 'Объекты избранного'
         ordering = ('id',)
         constraints = [
             models.UniqueConstraint(
@@ -165,13 +182,11 @@ class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='recipe_ingredients',
         verbose_name='Рецепт'
     )
     ingredient = models.ForeignKey(
-        Ingredient, 
+        Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredient_recipes',
         verbose_name='Ингредиент'
     )
     amount = models.PositiveSmallIntegerField(
@@ -185,15 +200,3 @@ class RecipeIngredient(models.Model):
 
     def __str__(self) -> str:
         return f'{self.ingredient} для {self.recipe}'
-
-
-class RecipeQuerySet(models.QuerySet):
-
-    def add_user_annotations(self, user_id: Optional[int]):
-        return self.annotate(
-            is_favorite=Exists(
-                Favorite.objects.filter(
-                    user_id=user_id, recipe__pk=OuterRef('pk')
-                )
-            ),
-        )
