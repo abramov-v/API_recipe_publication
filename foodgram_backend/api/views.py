@@ -7,7 +7,7 @@ from rest_framework.permissions import (SAFE_METHODS, AllowAny,
                                         IsAuthenticatedOrReadOnly)
 
 from api.paginators import CustomPagination
-from api.serializers import (TagSerializer, IngredientSerializer, RecipeListSerializer)
+from api.serializers import (TagSerializer, IngredientSerializer, RecipeListSerializer, RecipeCreateSerializer)
 from recipes.models import Recipe, Tag, Ingredient
 from django_filters.rest_framework import DjangoFilterBackend
 from api.permissions import AdminOrReadOnly
@@ -55,11 +55,15 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class RecipesViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = CustomPagination
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
     def get_serializer_class(self):
-        if self.request.method in ('post', 'patch', 'delete'):
-            pass
+        if self.action in ('create', 'update', 'partial_update'):
+            return RecipeCreateSerializer
         return RecipeListSerializer
     
     def retrieve(self, request, *args, **kwargs):

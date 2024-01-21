@@ -1,29 +1,29 @@
 [
     {
         "model": "recipes.Tag",
-        "pk": 4,
+        "pk": 1,
         "fields": {
-            "name": "new",
-            "color": "синий",
-            "slug": "blue"
+            "name": "Завтрак",
+            "color": "#E26C2D",
+            "slug": "breakfast"
         }
     },
     {
         "model": "recipes.Tag",
-        "pk": 5,
+        "pk": 2,
         "fields": {
-            "name": "old",
-            "color": "зеленый",
-            "slug": "green"
+            "name": "Обед",
+            "color": "#123456",
+            "slug": "lunch"
         }
     },
     {
         "model": "recipes.Tag",
-        "pk": 6,
+        "pk": 3,
         "fields": {
-            "name": "existing",
-            "color": "красный",
-            "slug": "red"
+            "name": "Ужин",
+            "color": "#654321",
+            "slug": "dinner"
         }
     }
 ]

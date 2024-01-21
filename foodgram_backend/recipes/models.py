@@ -4,6 +4,7 @@ from typing import Optional
 from django.db import models
 from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
+from django.core.validators import RegexValidator
 
 User = get_user_model()
 
@@ -20,12 +21,23 @@ class Tag(models.Model):
         max_length=settings.MAX_COLOR_LENGTH,
         null=True,
         unique=True,
+        validators=[
+            RegexValidator(
+                regex=r'^#(?:[0-9a-fA-F]{3}){1,2}$',
+                message='Введите корректный цвет в HEX формате (например, #123ABC или #123).'
+            )
+        ],
         verbose_name='Цвет тега в HEX'
     )
     slug = models.CharField(
         max_length=settings.MAX_SLUG_LENGTH,
         unique=True,
         null=True,
+        validators=[
+        RegexValidator(
+            regex=r'^[-a-zA-Z0-9_]+$',
+        )
+        ],
         verbose_name='Cлаг'
     )
 

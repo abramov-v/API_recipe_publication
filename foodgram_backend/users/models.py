@@ -19,6 +19,12 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=150,
         unique=True,
+        validators=[
+        RegexValidator(
+            regex=r'^[\w.@+-]+\Z',
+            message='Username must be Alphanumeric'
+        )
+        ],
         verbose_name='Имя пользователя',
         help_text='Введите юзернейм',
     )
@@ -31,6 +37,10 @@ class User(AbstractUser):
         max_length=150,
         verbose_name='Фамилия',
         help_text='Введите фамилию',
+    )
+    password = models.CharField(
+        max_length=150,
+        verbose_name='пароль',
     )
 
     class Meta:
