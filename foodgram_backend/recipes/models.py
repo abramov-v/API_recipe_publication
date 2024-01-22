@@ -4,7 +4,7 @@ from typing import Optional
 from django.db import models
 from django.db.models import Exists, OuterRef
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator
 
 User = get_user_model()
 
@@ -71,16 +71,16 @@ class Ingredient(models.Model):
         return f'{self.name} ({self.measurement_unit})'
 
 
-class RecipeQuerySet(models.QuerySet):
+# class RecipeQuerySet(models.QuerySet):
 
-    def add_user_annotations(self, user_id: Optional[int]):
-        return self.annotate(
-            is_favorite=Exists(
-                Favorite.objects.filter(
-                    user_id=user_id, recipe__pk=OuterRef('pk')
-                )
-            ),
-        )
+#     def add_user_annotations(self, user_id: Optional[int]):
+#         return self.annotate(
+#             is_favorite=Exists(
+#                 Favorite.objects.filter(
+#                     user_id=user_id, recipe__pk=OuterRef('pk')
+#                 )
+#             ),
+#         )
 
 
 class Recipe(models.Model):
@@ -99,8 +99,6 @@ class Recipe(models.Model):
     image = models.ImageField(
         upload_to='recipes/',
         verbose_name='Картинка блюда',
-        null=True,
-        blank=True
     )
     text = models.TextField(
         max_length=settings.MAX_LENGTH_RECIPE_TEXT,
@@ -117,11 +115,13 @@ class Recipe(models.Model):
         verbose_name='Список тегов'
     )
     cooking_time = models.PositiveSmallIntegerField(
-        default=settings.MIN_COOK_TIME,
+        validators=[
+            MinValueValidator(settings.MIN_COOK_TIME, message='Значение должно быть больше 1')
+        ],
         verbose_name='Время приготовления'
     )
  
-    objects = RecipeQuerySet.as_manager()
+    # objects = RecipeQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -179,12 +179,12 @@ class ShoppingCart(models.Model):
         verbose_name = 'Рецепт в списке покупок'
         verbose_name_plural = 'Рецепты в списке покупок'
         ordering = ('id',)
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='unique_cart_user_recipe'
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=('user', 'recipe'),
+        #         name='unique_cart_user_recipe'
+        #     )
+        # ]
 
     def __str__(self) -> str:
         return f'{self.recipe} в корзине {self.user}'

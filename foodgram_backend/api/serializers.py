@@ -10,7 +10,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-   
 
 class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField(
@@ -148,7 +147,7 @@ class IngredientCreateSerializer(serializers.ModelSerializer):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     ingredients = IngredientCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all())
+        many=True, queryset=Tag.objects.all(), required=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
 
@@ -174,27 +173,74 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if len(value) < 1:
             raise serializers.ValidationError("Добавьте хотя бы один ингредиент.")
         return value
-        
     
+    def validate_tags(self, tags):
+        tag_list = []
+        
+        for tag in tags:
+            query_set = Tag.objects.filter(id=tag.id)
+            if not query_set.exists():
+                raise serializers.ValidationError(
+                    'Указанного тега не существует')
+        
+        for tag in tags:
+            if tag in tag_list:
+                raise serializers.ValidationError('Теги должны быть уникальны.')
+            tag_list.append(tag)
+
+        if len(tag_list) < 1:
+            raise serializers.ValidationError('Отсутвуют теги.')
+        
+        return tags
+
+    def validate_image(self, value):
+        if not value:
+            raise serializers.ValidationError("Image is required for creating a recipe.")
+        return value
+    
+    def validate(self, data):
+        request_method = self.context['request'].method
+        if request_method == 'PATCH':
+            if 'tags' not in data:
+                raise serializers.ValidationError({"tags": "This field is required."})
+
+            if 'ingredients' not in data:
+                raise serializers.ValidationError({"ingredients": "This field is required."})
+            
+            # Check for duplicate ingredients
+            ingredient_ids = [item.get('id') for item in data.get('ingredients', [])]
+            if len(ingredient_ids) != len(set(ingredient_ids)):
+                raise serializers.ValidationError({"ingredients": "Duplicate ingredients are not allowed."})
+
+        return data
+
+    def create_ingredients(self, recipe, ingredients_data):
+        seen_ingredients = set()
+        create_ingredients = []
+
+        for ingredient_data in ingredients_data:
+            ingredient_id = ingredient_data['ingredient'].id
+            if ingredient_id in seen_ingredients:
+                raise serializers.ValidationError('Присутсвуют одинаковые ингредиенты.')
+            seen_ingredients.add(ingredient_id)
+
+            create_ingredients.append(
+                RecipeIngredient(
+                    recipe=recipe,
+                    ingredient=ingredient_data['ingredient'],
+                    amount=ingredient_data['amount']
+                )
+            )
+
+        RecipeIngredient.objects.bulk_create(create_ingredients)
+
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags_data)
-
-        create_ingredients = [
-            RecipeIngredient(
-                recipe=recipe,
-                ingredient=ingredient['ingredient'],
-                amount=ingredient['amount']
-            )
-            for ingredient in ingredients
-        ]
-        RecipeIngredient.objects.bulk_create(
-            create_ingredients
-        )
+        self.create_ingredients(recipe, ingredients)
         return recipe
-    
 
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients', None)
@@ -239,4 +285,33 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             return False
         return user.shopping_cart_recipes.filter(recipe=obj).exists()
 
- 
+
+class RecipeForSubscriptionSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода рецептов в избранном и списке покупок."""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time',)
+
+
+class SubscriptionsSerializer(serializers.ModelSerializer):
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed', 'recipes', 'recipes_count',)
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj).count()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        recipes_limit = request.query_params.get('recipes_limit', 6)
+        recipes = obj.recipes.all()[:int(recipes_limit)] if recipes_limit else obj.recipes.all()
+        return RecipeForSubscriptionSerializer(recipes, many=True, context={'request': request}).data
+    
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        return Subscription.objects.filter(user=request.user, author=obj).exists()
