@@ -24,7 +24,7 @@ class Tag(models.Model):
         validators=[
             RegexValidator(
                 regex=r'^#(?:[0-9a-fA-F]{3}){1,2}$',
-                message='Введите корректный цвет в HEX формате (например, #123ABC или #123).'
+                message='Введите корректный цвет в формате HEX'
             )
         ],
         verbose_name='Цвет тега в HEX'
@@ -34,11 +34,12 @@ class Tag(models.Model):
         unique=True,
         null=True,
         validators=[
-        RegexValidator(
-            regex=r'^[-a-zA-Z0-9_]+$',
-        )
+            RegexValidator(
+                regex=r'^[-a-zA-Z0-9_]+$',
+                message='Поле slug содержит запрещенные символы'
+            )
         ],
-        verbose_name='Cлаг'
+        verbose_name='Cлаг тега'
     )
 
     class Meta:
@@ -59,7 +60,7 @@ class Ingredient(models.Model):
     )
     measurement_unit = models.CharField(
         max_length=settings.MAX_LENGTH_MEASURING_UNIT,
-        verbose_name='Единицы измерения'
+        verbose_name='Единица измерения'
     )
 
     class Meta:
@@ -68,19 +69,7 @@ class Ingredient(models.Model):
         ordering = ('name',)
 
     def __str__(self) -> str:
-        return f'{self.name} ({self.measurement_unit})'
-
-
-# class RecipeQuerySet(models.QuerySet):
-
-#     def add_user_annotations(self, user_id: Optional[int]):
-#         return self.annotate(
-#             is_favorite=Exists(
-#                 Favorite.objects.filter(
-#                     user_id=user_id, recipe__pk=OuterRef('pk')
-#                 )
-#             ),
-#         )
+        return f'{self.name} в ({self.measurement_unit})'
 
 
 class Recipe(models.Model):
@@ -94,14 +83,18 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         max_length=settings.MAX_LENGTH_NAME,
+        blank=False,
+        unique=True,
         verbose_name='Название блюда',
     )
     image = models.ImageField(
-        upload_to='recipes/',
+        upload_to='recipes_images/',
+        blank=False,
         verbose_name='Картинка блюда',
     )
     text = models.TextField(
         max_length=settings.MAX_LENGTH_RECIPE_TEXT,
+        blank=False,
         verbose_name='Описание блюда'
     )
     ingredients = models.ManyToManyField(
@@ -116,17 +109,23 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         validators=[
-            MinValueValidator(settings.MIN_COOK_TIME, message='Значение должно быть больше 1')
+            MinValueValidator(
+                settings.MIN_COOK_TIME,
+                message='Значение должно быть больше чем одна минута'
+            )
         ],
+        blank=False,
         verbose_name='Время приготовления'
     )
- 
-    # objects = RecipeQuerySet.as_manager()
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации рецепта'
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('id',)
+        ordering = ('-pub_date',)
 
     def __str__(self) -> str:
         return f'Блюдо {self.name}. Автор {self.author}'
@@ -179,12 +178,12 @@ class ShoppingCart(models.Model):
         verbose_name = 'Рецепт в списке покупок'
         verbose_name_plural = 'Рецепты в списке покупок'
         ordering = ('id',)
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=('user', 'recipe'),
-        #         name='unique_cart_user_recipe'
-        #     )
-        # ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_shopping_cart'
+            )
+        ]
 
     def __str__(self) -> str:
         return f'{self.recipe} в корзине {self.user}'

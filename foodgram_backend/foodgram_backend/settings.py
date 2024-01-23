@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'token')
 
@@ -63,6 +64,19 @@ DATABASES = {
     }
 }
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('POSTGRES_DB', 'postgres'),
+#         'USER': os.getenv('POSTGRES_USER', 'postgres'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+#         'HOST': os.getenv('DB_HOST', ''),
+#         'PORT': os.getenv('DB_PORT', 5432)
+#     }
+# }
+
+
 AUTH_USER_MODEL = 'users.User'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -91,11 +105,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/docs/'
-STATIC_ROOT = BASE_DIR / 'docs/'
+STATIC_URL = '/static/django/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/app/media/'
+STATIC_ROOT = BASE_DIR / 'static_django'
+# STATIC_ROOT = '/app/static_django'
+
+# MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_ROOT = '/app/media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -105,8 +122,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 6,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
@@ -126,6 +141,10 @@ DJOSER = {
     },
 }
 
+
+MAX_LENGTH_EMAIL = 254
+
+MAX_LENGTH_USER_FIELDS = 150
 
 MAX_LENGTH_NAME = 200
 

@@ -1,70 +1,71 @@
 from django.db import models
 from django.conf import settings
-from django.core.validators import RegexValidator
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 
 
 class User(AbstractUser):
+    """Модель пользователя."""
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('first_name', 'last_name', 'username')
 
     email = models.EmailField(
-        max_length=254,
+        max_length=settings.MAX_LENGTH_EMAIL,
         unique=True,
         blank=False,
         verbose_name='Адрес электронной почты',
-        help_text='Укажите адрес электронной почты',
+        help_text='Введите Ваш адрес электронной почты',
     )
     username = models.CharField(
-        max_length=150,
+        max_length=settings.MAX_LENGTH_USER_FIELDS,
         unique=True,
+        blank=False,
         validators=[
-        RegexValidator(
-            regex=r'^[\w.@+-]+\Z',
-            message='Username must be Alphanumeric'
-        )
+            RegexValidator(
+                regex=r'^[\w.@+-]+\Z',
+                message='Имя пользователя содержит запрещенные символы'
+            )
         ],
         verbose_name='Имя пользователя',
-        help_text='Введите юзернейм',
+        help_text='Введите ваше Имя пользователя',
     )
     first_name = models.CharField(
-        max_length=150,
+        max_length=settings.MAX_LENGTH_USER_FIELDS,
+        blank=False,
         verbose_name='Имя',
-        help_text='Введите имя',
+        help_text='Введите ваше Имя',
     )
     last_name = models.CharField(
-        max_length=150,
+        max_length=settings.MAX_LENGTH_USER_FIELDS,
+        blank=False,
         verbose_name='Фамилия',
-        help_text='Введите фамилию',
-    )
-    password = models.CharField(
-        max_length=150,
-        verbose_name='пароль',
+        help_text='Введите ваше Фамилию',
     )
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        ordering = ('username',)
+        ordering = ('id',)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.username} -> {self.email}'
 
 
-
 class Subscription(models.Model):
+    """Модель подписки пользователей."""
+
     user = models.ForeignKey(
-        User,
+        'users.User',
         on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='автор',
+        related_name='subscriptions',
+        verbose_name='Подписки',
     )
     author = models.ForeignKey(
-        User,
+        'users.User',
         on_delete=models.CASCADE,
-        related_name='following',
-        verbose_name='подписчик',
+        related_name='subscribers',
+        verbose_name='Подписчики',
     )
 
     class Meta:
@@ -72,10 +73,10 @@ class Subscription(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
+                fields=('user', 'author'),
                 name='unique_subscription'
             )
         ]
 
     def __str__(self) -> str:
-        return f"{self.subscriber} подписан на {self.subscribed}"
+        return f'{self.user} подписан на {self.author}'

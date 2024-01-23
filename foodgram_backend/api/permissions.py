@@ -15,3 +15,7 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the author of the recipe.
         return obj.author == request.user
+    
+# гость (неавторизованный пользователь),
+# авторизованный пользователь,
+# администратор.

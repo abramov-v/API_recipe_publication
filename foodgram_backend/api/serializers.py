@@ -4,7 +4,7 @@ from users.models import Subscription
 from rest_framework.validators import UniqueTogetherValidator
 from drf_extra_fields.fields import Base64ImageField
 from django.core.files.base import ContentFile
-from drf_extra_fields.fields import Base64ImageField
+
 
 from django.contrib.auth import get_user_model
 
@@ -36,12 +36,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
-        fields = ('email', 'username', 'first_name',
-                  'last_name', 'password',)
-    
+        fields = ('id', 'email', 'username',
+                  'first_name', 'last_name', 'password',)
+        
     def create(self, validated_data):
         user = User(
             email = validated_data['email'],
@@ -100,7 +101,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
     author = UserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
-    image = serializers.StringRelatedField()
+    
 
 
     class Meta:
