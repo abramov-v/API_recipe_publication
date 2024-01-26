@@ -1,11 +1,11 @@
-from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+from django.db import models
 
 
 class User(AbstractUser):
-    """Модель пользователя."""
+    """Модель пользователя для проекта Foodgram."""
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('first_name', 'last_name', 'username')
@@ -13,14 +13,12 @@ class User(AbstractUser):
     email = models.EmailField(
         max_length=settings.MAX_LENGTH_EMAIL,
         unique=True,
-        blank=False,
         verbose_name='Адрес электронной почты',
         help_text='Введите Ваш адрес электронной почты',
     )
     username = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
         unique=True,
-        blank=False,
         validators=[
             RegexValidator(
                 regex=r'^[\w.@+-]+\Z',
@@ -32,13 +30,11 @@ class User(AbstractUser):
     )
     first_name = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
-        blank=False,
         verbose_name='Имя',
         help_text='Введите ваше Имя',
     )
     last_name = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
-        blank=False,
         verbose_name='Фамилия',
         help_text='Введите ваше Фамилию',
     )

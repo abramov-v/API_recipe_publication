@@ -80,7 +80,6 @@ class CustomUserViewSet(UserViewSet):
                 return Response({'detail': 'Вы не подписаны на этого пользователя'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-  
 class TagViewSet(ReadOnlyModelViewSet):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
@@ -143,17 +142,14 @@ class RecipesViewSet(ModelViewSet):
     @action(detail=False, methods=['get'])
     def download_shopping_cart(self, request):
         user = request.user
-        # Fetch the ingredients needed for the recipes in the user's shopping cart
         ingredients = RecipeIngredient.objects.filter(
-            recipe__in_shopping_carts__user=user
+            recipe__is_in_shopping_cart__user=user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
         ).annotate(
             total_amount=Sum('amount')
         ).order_by('ingredient__name')
-
-        # Prepare the content of the shopping cart
         shopping_cart_content = 'Список покупок:\n'
         for item in ingredients:
             shopping_cart_content += f"{item['ingredient__name']} - {item['total_amount']} {item['ingredient__measurement_unit']}\n"

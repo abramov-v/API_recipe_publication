@@ -7,3 +7,6 @@ admin.site.register(Ingredient)
 admin.site.register(RecipeIngredient)
 admin.site.register(Favorite)
 admin.site.register(Tag)
+
+
+#написать админки по заданию

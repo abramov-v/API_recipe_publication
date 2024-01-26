@@ -1,17 +1,32 @@
-from rest_framework.filters import SearchFilter
 from django_filters import rest_framework as filters
-from recipes.models import Recipe, Tag
+from rest_framework.filters import SearchFilter
 
+from recipes.models import Recipe, Tag
 from users.models import User
 
 
 class IngredientSearchFilter(SearchFilter):
+    """
+    Класс фильтра для поиска ингредиентов.
+    Использует параметр 'name' для поиска.
+    """
+
     search_param = 'name'
 
 
 class RecipeFilter(filters.FilterSet):
-    is_favorited = filters.BooleanFilter(method='recipe_is_favorited')
-    is_in_shopping_cart = filters.BooleanFilter(method='recipe_is_in_shopping_cart')
+    """
+    Класс для фильтрации рецептов.
+    Позволяет фильтровать рецепты по избранному,
+    наличию в корзине покупок, автору и тегам.
+    """
+
+    is_favorited = filters.BooleanFilter(
+        method='recipe_is_favorited'
+    )
+    is_in_shopping_cart = filters.BooleanFilter(
+        method='recipe_is_in_shopping_cart'
+    )
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     tags = filters.ModelMultipleChoiceFilter(
         field_name='tags__slug',
@@ -30,6 +45,5 @@ class RecipeFilter(filters.FilterSet):
 
     def recipe_is_in_shopping_cart(self, queryset, name, value):
         if self.request.user.is_authenticated and value:
-            return queryset.filter(in_shopping_carts__user=self.request.user)
+            return queryset.filter(is_in_shopping_cart__user=self.request.user)
         return queryset
-
