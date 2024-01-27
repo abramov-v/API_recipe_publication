@@ -109,7 +109,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
-    """Получение списка рецептов."""
+    """Сериализатора для получения рецептов."""
 
     ingredients = RecipeIngredientSerializer(
         many=True,
@@ -168,9 +168,13 @@ class IngredientCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
+    """Сериализаторя для создания рецепта."""
+
     ingredients = IngredientCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all(), required=True)
+        many=True,
+        queryset=Tag.objects.all(),
+        required=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
 
@@ -291,16 +295,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 create_ingredients
             )
         return super().update(instance, validated_data)
-
-    def to_representation(self, obj):
-        """Возвращаем прдеставление в таком же виде, как и GET-запрос."""
-        self.fields.pop('ingredients')
-        representation = super().to_representation(obj)
-        representation['tags'] = TagSerializer(obj.tags.all(), many=True).data
-        representation['ingredients'] = RecipeIngredientSerializer(
-            RecipeIngredient.objects.filter(recipe=obj).all(), many=True
-        ).data
-        return representation
 
     def to_representation(self, instance):
         return RecipeListSerializer(instance, context={

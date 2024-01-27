@@ -9,13 +9,13 @@ from api.views import (
     IngredientViewSet
 )
 
-app_name = 'api'
+app_name = 'api_foodgram'
 
 router_v1 = routers.DefaultRouter()
 router_v1.register(r'users', CustomUserViewSet, basename='users')
-router_v1.register(r'tags', TagViewSet)
-router_v1.register(r'recipes', RecipesViewSet)
-router_v1.register(r'ingredients', IngredientViewSet)
+router_v1.register(r'tags', TagViewSet, basename='tags')
+router_v1.register(r'recipes', RecipesViewSet, basename='recipes')
+router_v1.register(r'ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
     url(r'^auth/', include('djoser.urls.authtoken')),
