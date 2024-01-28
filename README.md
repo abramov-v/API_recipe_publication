@@ -1,6 +1,7 @@
 ## Доступ к серверу и админ-зону
 
-- **Сервер Фудграм:** [https://foodgram.servehttp.com/](https://foodgram.servehttp.com/)
+- **URL Фудграм:** [https://foodgram.servehttp.com/](https://foodgram.servehttp.com/)
+- **Сервер:** [http://158.160.85.16:8000/](http://158.160.85.16:8000/)
 - **Логин:** `admin@admin.net`
 - **Пароль:** `admin`
 
