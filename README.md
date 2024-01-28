@@ -7,3 +7,6 @@
 https://foodgram.servehttp.com
 admin@admin.net
 admin
+
+r2d2@food.com
+Kanobu39004
