@@ -9,7 +9,7 @@ from api.views import (
     IngredientViewSet
 )
 
-app_name = 'api_foodgram'
+app_name = 'api'
 
 router_v1 = routers.DefaultRouter()
 router_v1.register(r'users', CustomUserViewSet, basename='users')
