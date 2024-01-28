@@ -123,7 +123,7 @@
 
 API доступен по адресу [https://foodgram.servehttp.com/api/](https://foodgram.servehttp.com/api/)
 
-Документация к API -> [https://foodgram.servehttp.com/api/](https://foodgram.servehttp.com/api/)
+Документация к API -> [https://foodgram.servehttp.com/api/docs/](https://foodgram.servehttp.com/api/docs/)
 
 
 
