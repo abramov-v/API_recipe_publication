@@ -126,7 +126,7 @@ API доступен по адресу [https://foodgram.servehttp.com/api/](htt
 
 
 
-Список пользователей метод GET 
+**Список пользователей метод GET**
 
 `https://foodgram.servehttp.com/api/users/`
 
@@ -150,7 +150,7 @@ API доступен по адресу [https://foodgram.servehttp.com/api/](htt
 }
 ```
 
-Регистрация пользователя метод POST
+**Регистрация пользователя метод POST**
    
 `https://foodgram.servehttp.com/api/users/`
 
@@ -178,10 +178,39 @@ API доступен по адресу [https://foodgram.servehttp.com/api/](htt
 }
 ```
 
+**Профиль пользователя метод GET**
 
+`https://foodgram.servehttp.com/api/users/{id}/`
 
+Пример ответа:
 
+```json
+{
+  "email": "user@example.com",
+  "id": 0,
+  "username": "string",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "is_subscribed": false
+}
+```
 
+**Cписок тегов метод GET**
+
+`https://foodgram.servehttp.com/api/tags/`
+
+Пример ответа:
+
+```json
+[
+  {
+    "id": 0,
+    "name": "Завтрак",
+    "color": "#E26C2D",
+    "slug": "breakfast"
+  }
+]
+```
 
 
 
