@@ -20,25 +20,18 @@
 - **Пароль:** `admin`
 
 ## Используемые технологии в проекте:
-- **Gunicorn** 20.1.0
-- **Django** 3.2.3
+- **Django** 3.2
 - **Djangorestframework** 3.12.4
 - **Djoser** 2.1.0
-- **Webcolors** 1.11.1
-- **Psycopg2-binary** 2.9.3
+- **Psycopg2** 2.9.3
 - **Pillow** 9.0.0
-- **Pytest** 6.2.4
-- **Pytest-django** 4.4.0
-- **Pytest-pythonpath** 0.7.3
-- **PyYAML** 6.0
+- **Flake8** 5.0.4
+- **Django-colorfield** 0.6.3
+- **Django-cors-headers** 3.13.0
+- **Django-filter** 23.3
+- **Drf-extra-fields** 3.4.0
+- **Django-extensions**
+- **python-dotenv** 0.21
+- **Gunicorn** 20.1.0
 
 
-Добавьте в файл README.md адрес сервера, на котором запущен ваш проект (укажите IP или доменное имя), а также логин и пароль администратора. Это нужно, чтобы ревьюер смог проверить работу админки.
-
-
-https://foodgram.servehttp.com
-admin@admin.net
-admin
-
-r2d2@food.com
-Kanobu39004
