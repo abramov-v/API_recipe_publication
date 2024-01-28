@@ -36,3 +36,31 @@
 - **Gunicorn** 20.1.0
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Автор
+
+**Валерий Абрамов**
+- GitHub: [@tsulaco](https://github.com/tsulaco)
+- Электронная почта: v.abramov12@yandex.ru
+- 2024
