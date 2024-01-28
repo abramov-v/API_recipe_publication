@@ -1,8 +1,10 @@
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.db.models import Sum
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import (
@@ -13,21 +15,28 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from djoser.views import UserViewSet
-from django_filters.rest_framework import DjangoFilterBackend
 
 from api.filters import IngredientSearchFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.serializers import (
-    TagSerializer, IngredientSerializer, RecipeListSerializer,
-    RecipeCreateSerializer, SubscriptionsSerializer,
-    RecipeForSubscriptionSerializer
+    IngredientSerializer,
+    RecipeCreateSerializer,
+    RecipeForSubscriptionSerializer,
+    RecipeListSerializer,
+    SubscriptionsSerializer,
+    TagSerializer,
 )
-from recipes.models import (Recipe, Tag,
-                            Ingredient, ShoppingCart,
-                            RecipeIngredient, Favorite
-                            )
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
 from users.models import Subscription
+
 
 User = get_user_model()
 
@@ -95,7 +104,7 @@ class CustomUserViewSet(UserViewSet):
             if subscription.exists():
                 subscription.delete()
                 return Response(
-                    {'detail': 'Unsubscribed successfully.'},
+                    {'detail': 'Успешная отписка.'},
                     status=status.HTTP_204_NO_CONTENT
                 )
             else:

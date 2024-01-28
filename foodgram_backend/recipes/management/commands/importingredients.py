@@ -1,5 +1,7 @@
-from django.core.management.base import BaseCommand
 import csv
+
+from django.core.management.base import BaseCommand
+
 from recipes.models import Ingredient
 
 
@@ -18,4 +20,6 @@ class Command(BaseCommand):
                     name=name,
                     measurement_unit=measurement_unit
                 )
-                self.stdout.write(self.style.SUCCESS(f'Imported: {name}'))
+                self.stdout.write(
+                    self.style.SUCCESS(f'Импортирован ингредиент: {name}')
+                )
