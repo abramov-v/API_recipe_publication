@@ -119,6 +119,9 @@
  sudo service nginx reload
 ```
 
+## Примеры API запросов
+
+API доступен по адресу [https://foodgram.servehttp.com/api/](https://foodgram.servehttp.com/api/)
 
 
 
