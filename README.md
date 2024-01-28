@@ -87,7 +87,6 @@
   python manage.py loaddata tags.json
 
   python manage.py importingredients
-  
   ```
 
 7. Создать суперпользователя
@@ -98,7 +97,7 @@
 
  `sudo nano /etc/nginx/sites-enabled/default`
 
-9. Изменить настройки location в секции server:
+9. Изменить настройки и сохраните файл:
 
 ```
     server {
@@ -110,8 +109,8 @@
         proxy_set_header Host $http_host;
         proxy_pass http://127.0.0.1:8000/;
     }
-
 ```
+
 10. Проверить и перезагрузить конфигурации Nginx
 
 ```
