@@ -23,7 +23,7 @@ services:
       - db 
 
   frontend:
-    image: virgo22/food_frontend:v1
+    image: tsulaco1/foodgram_frontend
     volumes:
       - static_frontend:/app/result_build/
 
