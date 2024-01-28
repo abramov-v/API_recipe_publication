@@ -124,8 +124,29 @@ API доступен по адресу [https://foodgram.servehttp.com/api/](htt
 
 Документация к API -> [https://foodgram.servehttp.com/api/docs/](https://foodgram.servehttp.com/api/docs/)
 
+Список пользователей метод GET 
 
+`https://foodgram.servehttp.com/api/users/`
 
+Response:
+
+```json
+{
+  "count": 123,
+  "next": "http://foodgram.example.org/api/users/?page=4",
+  "previous": "http://foodgram.example.org/api/users/?page=2",
+  "results": [
+    {
+      "email": "user@example.com",
+      "id": 0,
+      "username": "string",
+      "first_name": "Вася",
+      "last_name": "Пупкин",
+      "is_subscribed": false
+    }
+  ]
+}
+```
 
 
 
