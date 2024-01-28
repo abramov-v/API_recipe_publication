@@ -124,11 +124,13 @@ API доступен по адресу [https://foodgram.servehttp.com/api/](htt
 
 Документация к API -> [https://foodgram.servehttp.com/api/docs/](https://foodgram.servehttp.com/api/docs/)
 
+
+
 Список пользователей метод GET 
 
 `https://foodgram.servehttp.com/api/users/`
 
-Response:
+Пример ответа:
 
 ```json
 {
@@ -148,12 +150,33 @@ Response:
 }
 ```
 
+Регистрация пользователя метод POST
+   
+`https://foodgram.servehttp.com/api/users/`
 
+Пример запроса:
+   
+```json
+{
+  "email": "vpupkin@yandex.ru",
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин",
+  "password": "Qwerty123"
+}
+```
 
+Пример ответа статус 201:
 
-
-
-
+```json
+{
+  "email": "vpupkin@yandex.ru",
+  "id": 0,
+  "username": "vasya.pupkin",
+  "first_name": "Вася",
+  "last_name": "Пупкин"
+}
+```
 
 
 
