@@ -35,6 +35,89 @@
 - **python-dotenv** 0.21
 - **Gunicorn** 20.1.0
 
+## Инструкция по запуску
+
+1. Клонировать репозиторий и перейти в него в командной строке:
+
+  `git@github.com:tsulaco/foodgram-project-react.git`
+  
+  `cd foodgram-project-react`
+
+2. Создать файл **.env** и заполните его необходимыми данными. Все необходимые переменные есть в образце файле **.env.example,** находящемся в корневой директории проекта. 
+
+### Деплой на сервере
+
+1. Подключиться к вашему удаленному серверу
+
+ `ssh -i PATH_TO_SSH_KEY/SSH_KEY_NAME YOUR_USERNAME@SERVER_IP_ADDRESS`
+
+2. Создать на сервере директорию foodgram-project-react:
+
+  `mkdir foodgram-project-react`
+
+3. Установить Docker Compose на сервер:
+   
+```
+  sudo apt update
+  sudo apt install curl
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
+  sudo apt install docker-compose
+```
+
+4. Скопировать файл из директории `foodgram-project-react/infra` **docker-compose.yml** и файл **.env** в директорию **foodgram-project-react/** на сервере:
+
+5. Запустить Docker Compose
+
+   `sudo docker-compose -f /home/YOUR_USERNAME/foodgram-project-react/docker-compose.yml up -d`
+
+6. Зайдите в backend контейнер ипользуя команду
+
+   `docker exec -it foodgram-backend-1 bash`
+   
+  Выполнить миграции, сбор статики и загрузите данные в базу данных
+  
+  ```
+  python manage.py makemigrations
+
+  python manage.py migrate
+  
+  python manage.py collectstatic
+
+  python manage.py loaddata tags.json
+
+  python manage.py importingredients
+  
+  ```
+
+7. Создать суперпользователя
+
+  `python manage.py createsuperuser`
+
+8. Настроить конфигурационный файл Nginx в редакторе nano:
+
+ `sudo nano /etc/nginx/sites-enabled/default`
+
+9. Изменить настройки location в секции server:
+
+```
+    server {
+    index  index.html index.htm;
+    client_max_body_size 50m;
+    server_name [адрес вашего сервера] [адрес вашего URL];
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_pass http://127.0.0.1:8000/;
+    }
+
+```
+10. Проверить и перезагрузить конфигурации Nginx
+
+```
+ sudo nginx -t
+ sudo service nginx reload
+```
 
 
 
