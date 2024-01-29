@@ -358,19 +358,18 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = ['author']
 
-    def validate_author(self, value):
-        user = self.context['request'].user
-        if user == value:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя'
-            )
-        return value
-
     def validate(self, data):
         user = self.context['request'].user
         author = data.get('author')
+
+        if user == author:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя'
+            )
+
         if user.subscriptions.filter(author=author).exists():
             raise serializers.ValidationError(
                 {'detail': 'Вы уже подписаны на этого пользователя'}
             )
+
         return data
