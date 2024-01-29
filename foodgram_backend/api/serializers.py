@@ -1,7 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from drf_extra_fields.fields import Base64ImageField
+
 from rest_framework import serializers
+from drf_extra_fields.fields import Base64ImageField
+from django.contrib.auth import get_user_model
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from users.models import Subscription
@@ -25,12 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
             'is_subscribed',
         )
 
-    def get_is_subscribed(self, value):
-        user = self.context['request'].user
-        return user.is_authenticated and Subscription.objects.filter(
-            user=user,
-            author=value
-        ).exists()
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        return user.is_authenticated and user.subscriptions.filter(
+            author=obj).exists()
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -156,7 +155,11 @@ class IngredientCreateSerializer(serializers.ModelSerializer):
         source='ingredient',
         queryset=Ingredient.objects.all()
     )
-    amount = serializers.IntegerField(write_only=True, min_value=1)
+    amount = serializers.IntegerField(
+        write_only=True,
+        min_value=settings.MIN_AMOUNT_VALUE,
+        max_value=settings.MAX_AMOUNT_VALUE
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -177,6 +180,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         required=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
+    cooking_time = serializers.IntegerField(
+        min_value=settings.MIN_COOK_TIME,
+        max_value=settings.MAX_COOK_TIME
+    )
 
     class Meta:
         model = Recipe
@@ -192,7 +199,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         )
 
     def validate_ingredients(self, value):
-        if len(value) < 1:
+        if not value:
             raise serializers.ValidationError(
                 'Добавьте хотя бы один ингредиент.'
             )
@@ -214,8 +221,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 )
             tag_list.append(tag)
 
-        if len(tag_list) < 1:
-            raise serializers.ValidationError('Отсутвуют теги.')
+        if not tag_list:
+            raise serializers.ValidationError('Отсутвуют теги')
         return tags
 
     def validate_image(self, value):
@@ -281,19 +288,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients', None)
         if ingredients is not None:
-            instance.ingredients.clear()
-
-            create_ingredients = [
-                RecipeIngredient(
-                    recipe=instance,
-                    ingredient=ingredient['ingredient'],
-                    amount=ingredient['amount']
-                )
-                for ingredient in ingredients
-            ]
-            RecipeIngredient.objects.bulk_create(
-                create_ingredients
-            )
+            self.create_ingredients(instance, ingredients)
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
@@ -316,7 +311,7 @@ class RecipeForSubscriptionSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
-    """Сериализатор для подписок пользователей."""
+    """Сериализатор для вывода подписок пользователей."""
 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -336,7 +331,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         )
 
     def get_recipes_count(self, obj):
-        return Recipe.objects.filter(author=obj).count()
+        return obj.recipes.count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
@@ -351,8 +346,31 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         ).data
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        return Subscription.objects.filter(
-            user=request.user,
-            author=obj
-        ).exists()
+        user = self.context.get('request').user
+        return user.is_authenticated and user.subscriptions.filter(
+            author=obj).exists()
+
+
+class SubscriptionCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания и удаления подписок."""
+
+    class Meta:
+        model = Subscription
+        fields = ['author']
+
+    def validate_author(self, value):
+        user = self.context['request'].user
+        if user == value:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя'
+            )
+        return value
+
+    def validate(self, data):
+        user = self.context['request'].user
+        author = data.get('author')
+        if user.subscriptions.filter(author=author).exists():
+            raise serializers.ValidationError(
+                {'detail': 'Вы уже подписаны на этого пользователя'}
+            )
+        return data

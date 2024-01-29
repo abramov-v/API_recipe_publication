@@ -1,5 +1,9 @@
 from django.conf import settings
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (
+    MinValueValidator,
+    MaxValueValidator,
+    RegexValidator
+)
 from django.db import models
 
 
@@ -40,6 +44,9 @@ class Tag(models.Model):
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
         ordering = ('name',)
+
+    def __str__(self) -> str:
+        return f'{self.name}'
 
 
 class Ingredient(models.Model):
@@ -100,6 +107,11 @@ class Recipe(models.Model):
             MinValueValidator(
                 settings.MIN_COOK_TIME,
                 message='Значение должно быть больше чем одна минута'
+            ),
+            MaxValueValidator(
+                settings.MAX_COOK_TIME,
+                message='Значение должно быть меньше 32000 минут'
+
             )
         ],
         verbose_name='Время приготовления (в минутах)'
@@ -197,7 +209,11 @@ class RecipeIngredient(models.Model):
         validators=[
             MinValueValidator(
                 settings.MIN_AMOUNT_VALUE,
-                message='Добавьте хотябы один ингредиент '
+                message='Добавьте хотябы один ингредиент'
+            ),
+            MaxValueValidator(
+                settings.MAX_AMOUNT_VALUE,
+                message='Слишком много ингредиентов'
             )
         ],
         verbose_name='Количество',
@@ -206,6 +222,7 @@ class RecipeIngredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецепта'
+        ordering = ('id',)
 
     def __str__(self) -> str:
         return f'{self.ingredient} для {self.recipe}'

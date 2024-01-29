@@ -11,7 +11,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'my_token')
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+# DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -145,10 +146,14 @@ MAX_SLUG_LENGTH = 200
 
 MIN_AMOUNT_VALUE = 1
 
+MAX_AMOUNT_VALUE = 32_000
+
 MAX_LENGTH_MEASURING_UNIT = 200
 
 MAX_LENGTH_RECIPE_TEXT = 500
 
 MIN_COOK_TIME = 1
+
+MAX_COOK_TIME = 32_000
 
 DEFAULT_RECIPES_LIMIT = 6
