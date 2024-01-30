@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context['request'].user
         return user.is_authenticated and user.subscriptions.filter(
             author=obj).exists()
 
@@ -293,7 +293,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeListSerializer(instance, context={
-            'request': self.context.get('request')
+            'request': self.context['request']
         }).data
 
 
@@ -334,7 +334,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         return obj.recipes.count()
 
     def get_recipes(self, obj):
-        request = self.context.get('request')
+        request = self.context['request']
         recipes_limit = request.query_params.get(
             'recipes_limit',
             settings.DEFAULT_RECIPES_LIMIT)
@@ -346,7 +346,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         ).data
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context['request'].user
         return user.is_authenticated and user.subscriptions.filter(
             author=obj).exists()
 
