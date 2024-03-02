@@ -117,7 +117,7 @@ API Redoc Documentation is located in the project's docs directory
 
 **List of Users GET Method**
 
-`https://foodgram.servehttp.com/api/users/`
+`/api/users/`
 
 Example Response:
 
@@ -141,7 +141,7 @@ Example Response:
 
 **User Registration POST Method**
    
-`https://foodgram.servehttp.com/api/users/`
+`/api/users/`
 
 Example Request:
    
@@ -169,7 +169,7 @@ Example Response:
 
 **User Profile GET Method**
 
-`https://foodgram.servehttp.com/api/users/{id}/`
+`/api/users/{id}/`
 
 Example Response:
 
@@ -186,7 +186,7 @@ Example Response:
 
 **Tag list GET Method**
 
-`https://foodgram.servehttp.com/api/tags/`
+`/api/tags/`
 
 Example Response:
 
@@ -203,7 +203,7 @@ Example Response:
 
 **Recipes list GET Method**
 
-`https://foodgram.servehttp.com/api/recipes/`
+`/api/recipes/`
 
 Example Response:
 
@@ -252,7 +252,7 @@ Example Response:
 
 **Create recipe POST Method**
 
-`https://foodgram.servehttp.com/api/recipes/`
+`/api/recipes/`
 
 Example Request:
 
