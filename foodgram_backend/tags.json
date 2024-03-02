@@ -3,7 +3,7 @@
         "model": "recipes.Tag",
         "pk": 1,
         "fields": {
-            "name": "Завтрак",
+            "name": "Breakfast",
             "color": "#E26C2D",
             "slug": "breakfast"
         }
@@ -12,7 +12,7 @@
         "model": "recipes.Tag",
         "pk": 2,
         "fields": {
-            "name": "Обед",
+            "name": "Lunch",
             "color": "#123456",
             "slug": "lunch"
         }
@@ -21,7 +21,7 @@
         "model": "recipes.Tag",
         "pk": 3,
         "fields": {
-            "name": "Ужин",
+            "name": "Dinner",
             "color": "#654321",
             "slug": "dinner"
         }

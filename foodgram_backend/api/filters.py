@@ -7,8 +7,8 @@ from users.models import User
 
 class IngredientSearchFilter(SearchFilter):
     """
-    Класс фильтра для поиска ингредиентов.
-    Использует параметр 'name' для поиска.
+    Filter class for ingredient search.
+    Uses the 'name' parameter for searching.
     """
 
     search_param = 'name'
@@ -16,9 +16,9 @@ class IngredientSearchFilter(SearchFilter):
 
 class RecipeFilter(filters.FilterSet):
     """
-    Класс для фильтрации рецептов.
-    Позволяет фильтровать рецепты по избранному,
-    наличию в корзине покупок, автору и тегам.
+    Class for filtering recipes.
+    Allows filtering recipes by favorites,
+    presence in shopping cart, author, and tags.
     """
 
     is_favorited = filters.BooleanFilter(

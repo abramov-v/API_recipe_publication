@@ -12,7 +12,7 @@ from recipes.models import (
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для модели Рецептов."""
+    """Admin setup for the Recipe model."""
 
     list_display_links = ('name',)
     list_display = (
@@ -43,7 +43,7 @@ class RecipeAdmin(admin.ModelAdmin):
         return obj.favorites.count()
 
     favorites_count.short_description = (
-        'Число добавлений этого рецепта в избранное'
+        'Number of times this recipe has been favorited.'
     )
 
     def get_ingredients(self, obj):
@@ -55,16 +55,16 @@ class RecipeAdmin(admin.ModelAdmin):
              for ingredient in ingredients]
         )
     get_ingredients.short_description = (
-        'Список ингредиентов')
+        'List of ingredients')
 
     def get_tags(self, obj):
         return ", ".join([tag.name for tag in obj.tags.all()])
-    get_tags.short_description = 'Список тегов'
+    get_tags.short_description = 'List of tags'
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для модели Ингредиентов."""
+    """Admin setup for the Ingredient model."""
 
     list_display = (
         'name',
@@ -81,7 +81,7 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для модели Тегов."""
+    """Admin setup for the Tag model."""
 
     list_display_links = ('name',)
     list_display = (
@@ -97,7 +97,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для рецептов в избранном."""
+    """Admin setup for favorite recipes."""
 
     list_display = (
         'user',
@@ -110,7 +110,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для модели рецептов в списке покупок."""
+    """Admin setup for recipes in the shopping list model."""
 
     list_display = (
         'user',
@@ -123,7 +123,7 @@ class ShoppingCartAdmin(admin.ModelAdmin):
 
 @admin.register(RecipeIngredient)
 class RecipeIngredientAdmin(admin.ModelAdmin):
-    """Настройка админ зоны для модели Ингредиентов рецепта."""
+    """Admin setup for the RecipeIngredient model."""
 
     list_display = (
         'ingredient',

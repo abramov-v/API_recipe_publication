@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели пользователя."""
+    """Serializer for the user model."""
 
     is_subscribed = serializers.SerializerMethodField()
 
@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
-    """Сериализатор для регистрации пользователя."""
+    """Serializer for user registration."""
 
     password = serializers.CharField(write_only=True)
 
@@ -61,7 +61,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели тегов."""
+    """Serializer for the tag model."""
 
     class Meta:
         model = Tag
@@ -74,7 +74,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели ингредиентов."""
+    """Serializer for the ingredient model."""
 
     class Meta:
         model = Ingredient
@@ -86,7 +86,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор для модели связи рецепта и ингредиентов."""
+    """Serializer for the recipe-ingredient relationship model."""
 
     name = serializers.StringRelatedField(source='ingredient.name')
     measurement_unit = serializers.StringRelatedField(
@@ -108,7 +108,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
-    """Сериализатора для получения рецептов."""
+    """Serializer for retrieving recipes."""
 
     ingredients = RecipeIngredientSerializer(
         many=True,
@@ -148,7 +148,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
 
 class IngredientCreateSerializer(serializers.ModelSerializer):
-    """Сериализатор ингредиента при создании рецепта."""
+    """Serializer for the ingredient when creating a recipe."""
 
     recipe = serializers.PrimaryKeyRelatedField(read_only=True)
     id = serializers.PrimaryKeyRelatedField(
@@ -171,7 +171,7 @@ class IngredientCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
-    """Сериализаторя для создания рецепта."""
+    """Serializer for creating a recipe."""
 
     ingredients = IngredientCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(
@@ -201,7 +201,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def validate_ingredients(self, value):
         if not value:
             raise serializers.ValidationError(
-                'Добавьте хотя бы один ингредиент.'
+                'Add at least one ingredient.'
             )
         return value
 
@@ -212,23 +212,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             query_set = Tag.objects.filter(id=tag.id)
             if not query_set.exists():
                 raise serializers.ValidationError(
-                    'Указанного тега не существует')
+                    'The specified tag does not exist.')
 
         for tag in tags:
             if tag in tag_list:
                 raise serializers.ValidationError(
-                    'Теги должны быть уникальны.'
+                    'Tags must be unique.'
                 )
             tag_list.append(tag)
 
         if not tag_list:
-            raise serializers.ValidationError('Отсутвуют теги')
+            raise serializers.ValidationError('No tags are present.')
         return tags
 
     def validate_image(self, value):
         if not value:
             raise serializers.ValidationError(
-                'Необходима картинка для создания рецепта'
+                'An image is required to create a recipe.'
             )
         return value
 
@@ -237,12 +237,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         if request_method == 'PATCH':
             if 'tags' not in data:
                 raise serializers.ValidationError(
-                    {'tags': 'Это поле необходимо заполнить'}
+                    {'tags': 'This field is required.'}
                 )
 
             if 'ingredients' not in data:
                 raise serializers.ValidationError(
-                    {'ingredients': 'Это поле необходимо заполнить'}
+                    {'ingredients': 'This field is required.'}
                 )
 
             ingredient_ids = [item.get('id') for item in data.get(
@@ -250,7 +250,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             )]
             if len(ingredient_ids) != len(set(ingredient_ids)):
                 raise serializers.ValidationError(
-                    {'ingredients': 'Присутсвуют одинаковые ингредиенты'}
+                    {'ingredients': 'Duplicate ingredients are present.'}
                 )
 
         return data
@@ -263,7 +263,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             ingredient_id = ingredient_data['ingredient'].id
             if ingredient_id in seen_ingredients:
                 raise serializers.ValidationError(
-                    'Присутсвуют одинаковые ингредиенты'
+                    'Duplicate ingredients are present.'
                 )
             seen_ingredients.add(ingredient_id)
 
@@ -298,7 +298,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeForSubscriptionSerializer(serializers.ModelSerializer):
-    """Сериализатор для рецептов в избранном и в списке покупок."""
+    """Serializer for recipes in favorites and shopping list."""
 
     class Meta:
         model = Recipe
@@ -311,7 +311,7 @@ class RecipeForSubscriptionSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
-    """Сериализатор для вывода подписок пользователей."""
+    """Serializer for displaying user subscriptions."""
 
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -352,7 +352,7 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionCreateSerializer(serializers.ModelSerializer):
-    """Сериализатор для создания и удаления подписок."""
+    """Serializer for creating and deleting subscriptions."""
 
     class Meta:
         model = Subscription
@@ -364,12 +364,12 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
 
         if user == author:
             raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя'
+                'Cannot subscribe to oneself.'
             )
 
         if user.subscriptions.filter(author=author).exists():
             raise serializers.ValidationError(
-                {'detail': 'Вы уже подписаны на этого пользователя'}
+                {'detail': 'You are already subscribed to this user.'}
             )
 
         return data

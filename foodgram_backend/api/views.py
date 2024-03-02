@@ -40,7 +40,7 @@ User = get_user_model()
 
 
 class CustomUserViewSet(UserViewSet):
-    """Viewset для работы с пользователями и подписками."""
+    """Viewset for managing users and subscriptions."""
 
     pagination_class = CustomPagination
 
@@ -93,18 +93,18 @@ class CustomUserViewSet(UserViewSet):
                 subscription = request.user.subscriptions.get(author=author)
                 subscription.delete()
                 return Response(
-                    {'detail': 'Успешная отписка.'},
+                    {'detail': 'Unsubscription successful.'},
                     status=status.HTTP_204_NO_CONTENT
                 )
             except Subscription.DoesNotExist:
                 return Response(
-                    {'detail': 'Вы не подписаны на этого пользователя'},
+                    {'detail': 'You are not subscribed to this user.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
 
 class TagViewSet(ReadOnlyModelViewSet):
-    """Viwset для получения тегов."""
+    """Viewset for retrieving tags."""
 
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
@@ -112,7 +112,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
-    """Viwset для получения ингредиентов."""
+    """Viewset for retrieving ingredients."""
 
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
@@ -122,7 +122,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 
 
 class RecipesViewSet(ModelViewSet):
-    """Viewset дла работы с рецептами."""
+    """Viewset for managing recipes."""
 
     queryset = Recipe.objects.all()
     pagination_class = CustomPagination
@@ -153,13 +153,13 @@ class RecipesViewSet(ModelViewSet):
                 recipe = Recipe.objects.get(pk=pk)
             except Recipe.DoesNotExist:
                 return Response(
-                    {'detail': 'Такой рецепт не существует.'},
+                    {'detail': 'Such recipe does not exist.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             try:
                 request.user.shopping_cart_recipes.get(recipe=recipe)
                 return Response(
-                    {'detail': 'Рецепт уже добавлен в список покупок.'},
+                    {'detail': 'Recipe is already added to the shopping list.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             except ShoppingCart.DoesNotExist:
@@ -178,12 +178,12 @@ class RecipesViewSet(ModelViewSet):
                 )
                 shopping_cart_item.delete()
                 return Response(
-                    {'detail': 'Рецепт удален из списка покупок.'},
+                    {'detail': 'Recipe removed from the shopping list.'},
                     status=status.HTTP_204_NO_CONTENT
                 )
             except ShoppingCart.DoesNotExist:
                 return Response(
-                    {'detail': 'Рецепт не найден в списке покупок.'},
+                    {'detail': 'Recipe not found in the shopping list.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -201,7 +201,7 @@ class RecipesViewSet(ModelViewSet):
         ).annotate(
             total_amount=Sum('amount')
         ).order_by('ingredient__name')
-        shopping_cart_content = 'Список покупок:\n'
+        shopping_cart_content = 'Shopping list:\n'
         for item in ingredients:
             shopping_cart_content += (
                 f"\n* {item['ingredient__name']} "
@@ -228,13 +228,13 @@ class RecipesViewSet(ModelViewSet):
                 recipe = Recipe.objects.get(pk=pk)
             except Recipe.DoesNotExist:
                 return Response(
-                    {'detail': 'Рецепт не существует.'},
+                    {'detail': 'Recipe does not exist.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             try:
                 request.user.favorites.get(recipe=recipe)
                 return Response(
-                    {'detail': 'Рецепт уже в избранном.'},
+                    {'detail': 'Recipe is already in favorites.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             except Favorite.DoesNotExist:
@@ -251,11 +251,11 @@ class RecipesViewSet(ModelViewSet):
                 favorite_item = request.user.favorites.get(recipe=recipe)
                 favorite_item.delete()
                 return Response(
-                    {'detail': 'Рецепт удален из избранного.'},
+                    {'detail': 'Recipe removed from favorites.'},
                     status=status.HTTP_204_NO_CONTENT
                 )
             except Favorite.DoesNotExist:
                 return Response(
-                    {'detail': 'Рецепт не найден в избранном.'},
+                    {'detail': 'Recipe not found in favorites.'},
                     status=status.HTTP_400_BAD_REQUEST
                 )

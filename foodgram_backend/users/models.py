@@ -5,7 +5,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    """Модель пользователя для проекта Foodgram."""
+    """User model for the project."""
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('first_name', 'last_name', 'username')
@@ -13,8 +13,8 @@ class User(AbstractUser):
     email = models.EmailField(
         max_length=settings.MAX_LENGTH_EMAIL,
         unique=True,
-        verbose_name='Адрес электронной почты',
-        help_text='Введите Ваш адрес электронной почты',
+        verbose_name='Email address',
+        help_text='Enter your email address',
     )
     username = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
@@ -22,26 +22,26 @@ class User(AbstractUser):
         validators=[
             RegexValidator(
                 regex=r'^[\w.@+-]+\Z',
-                message='Имя пользователя содержит запрещенные символы'
+                message='Username contains forbidden characters'
             )
         ],
-        verbose_name='Имя пользователя',
-        help_text='Введите ваше Имя пользователя',
+        verbose_name='Username',
+        help_text='Enter your username',
     )
     first_name = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
-        verbose_name='Имя',
-        help_text='Введите ваше Имя',
+        verbose_name='Name',
+        help_text='Enter your name',
     )
     last_name = models.CharField(
         max_length=settings.MAX_LENGTH_USER_FIELDS,
-        verbose_name='Фамилия',
-        help_text='Введите ваше Фамилию',
+        verbose_name='Surname',
+        help_text='Enter your surname',
     )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
         ordering = ('id',)
 
     def __str__(self) -> str:
@@ -49,24 +49,24 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-    """Модель подписки пользователей."""
+    """Model for user subscriptions."""
 
     user = models.ForeignKey(
         'users.User',
         on_delete=models.CASCADE,
         related_name='subscriptions',
-        verbose_name='Подписки',
+        verbose_name='Subscriptions',
     )
     author = models.ForeignKey(
         'users.User',
         on_delete=models.CASCADE,
         related_name='subscribers',
-        verbose_name='Подписчики',
+        verbose_name='Followers',
     )
 
     class Meta:
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = 'Subscription'
+        verbose_name_plural = 'Subscriptions'
         ordering = ('id',)
         constraints = [
             models.UniqueConstraint(
@@ -76,4 +76,4 @@ class Subscription(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f'{self.user} подписан на {self.author}'
+        return f'{self.user} subscribed to {self.author}'

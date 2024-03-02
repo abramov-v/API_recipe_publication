@@ -6,7 +6,7 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
-    help = 'Ипортирование ингредиентов из файла CSV.'
+    help = 'Importing ingredients from a CSV file.'
 
     def handle(self, *args, **kwargs):
         with open(
@@ -21,5 +21,5 @@ class Command(BaseCommand):
                     measurement_unit=measurement_unit
                 )
                 self.stdout.write(
-                    self.style.SUCCESS(f'Импортирован ингредиент: {name}')
+                    self.style.SUCCESS(f'Ingredient imported: {name}')
                 )
