@@ -1,8 +1,8 @@
-# Foodgram
+# API Service for Recipe Publication
 
 ## About the Project
 
-"Foodgram" is an interactive website designed for culinary enthusiasts. Our platform allows users to:
+The API service allows users to:
 
 - Publish Recipes: Share your favorite recipes.
 - Add Recipes to Favorites: Find and save recipes from other users to easily access them in the future.
