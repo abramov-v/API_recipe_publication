@@ -2,7 +2,7 @@
 
 ## About the Project
 
-The API service allows users to:
+This API service allows users to:
 
 - Publish Recipes: Share your favorite recipes.
 - Add Recipes to Favorites: Find and save recipes from other users to easily access them in the future.
@@ -14,9 +14,9 @@ The API service allows users to:
 
 1. Clone the repository and navigate to it in the command line:
 
-  `git@github.com:tsulaco/foodgram-project-react.git`
+  `git@github.com:tsulaco/API-for-Recipe-Publication.git`
   
-  `cd foodgram-project-react`
+  `cd API_Recipe`
 
 2. Create a file named .env and fill it with the necessary data. All required variables are available in the sample file .env.example, located in the project's root directory.
 
@@ -28,7 +28,7 @@ The API service allows users to:
 
 2. Create a directory for application on the server:
 
-  `mkdir foodgram-project-react`
+  `mkdir API-for-Recipe-Publication`
 
 3. Install Docker Compose on the server:
    
@@ -44,7 +44,7 @@ The API service allows users to:
 
 5. Run Docker Compose
 
-   `sudo docker-compose -f /home/YOUR_USERNAME/foodgram-project-react/docker-compose.yml up -d`
+   `sudo docker-compose -f /home/YOUR_USERNAME/API-for-Recipe-Publication/docker-compose.yml up -d`
 
 6. Access the backend container using the command:
 
