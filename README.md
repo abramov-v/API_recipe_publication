@@ -14,9 +14,9 @@ This API service allows users to:
 
 1. Clone the repository and navigate to it in the command line:
 
-  `git@github.com:tsulaco/API-for-Recipe-Publication.git`
+  `git@github.com:tsulaco/API_recipe_publication.git`
   
-  `cd API_Recipe`
+  `cd API_recipe_publication`
 
 2. Create a file named .env and fill it with the necessary data. All required variables are available in the sample file .env.example, located in the project's root directory.
 
@@ -28,7 +28,7 @@ This API service allows users to:
 
 2. Create a directory for application on the server:
 
-  `mkdir API-for-Recipe-Publication`
+  `mkdir API_recipe_publication`
 
 3. Install Docker Compose on the server:
    
@@ -44,7 +44,7 @@ This API service allows users to:
 
 5. Run Docker Compose
 
-   `sudo docker-compose -f /home/YOUR_USERNAME/API-for-Recipe-Publication/docker-compose.yml up -d`
+   `sudo docker-compose -f /home/YOUR_USERNAME/API_recipe_publication/docker-compose.yml up -d`
 
 6. Access the backend container using the command:
 
@@ -78,7 +78,7 @@ This API service allows users to:
     server {
     index  index.html index.htm;
     client_max_body_size 50m;
-    server_name [адрес вашего сервера] [адрес вашего URL];
+    server_name [your server address] [your URL];
 
     location / {
         proxy_set_header Host $http_host;
