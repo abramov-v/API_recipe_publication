@@ -40,7 +40,7 @@ This API service allows users to:
   sudo apt install docker-compose
 ```
 
-4. Copy the file docker-compose.yml from the directory foodgram-project-react/infra and the file .env to the directory foodgram-project-react/ on the server:
+4. Copy the file docker-compose.yml from the directory API_recipe_publication/infra and the file .env to the directory API_recipe_publication/ on the server:
 
 5. Run Docker Compose
 
