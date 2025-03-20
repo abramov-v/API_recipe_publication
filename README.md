@@ -315,5 +315,5 @@ Example Response:
 
 ## Author
 **Valeriy Abramov**
-- GitHub: [@abramov-dev](https://github.com/abramov-dev) 
+- GitHub: [@abramov-v](https://github.com/abramov-v) 
 - email: abramov.valeriy@hotmail.com
