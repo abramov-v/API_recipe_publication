@@ -314,7 +314,6 @@ Example Response:
 ```
 
 ## Author
-
 **Valeriy Abramov**
 - GitHub: [@abramov-dev](https://github.com/abramov-dev) 
 - email: abramov.valeriy@hotmail.com
