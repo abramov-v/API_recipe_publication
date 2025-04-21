@@ -14,7 +14,7 @@ This API service allows users to:
 
 1. Clone the repository and navigate to it in the command line:
 
-  `git@github.com:tsulaco/API_recipe_publication.git`
+  `git@github.com:abramov-v/API_recipe_publication.git`
   
   `cd API_recipe_publication`
 
