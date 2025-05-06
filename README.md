@@ -1,4 +1,4 @@
-# Foodgram API — Recipe Sharing Platform
+# Foodgram API - Recipe Sharing Platform
 
 ## About the Project
 
