@@ -1,4 +1,4 @@
-# API Service for Recipe Publication
+# Foodgram API — Recipe Sharing Platform
 
 ## About the Project
 
@@ -131,8 +131,8 @@ Example Response:
       "email": "user@example.com",
       "id": 0,
       "username": "string",
-      "first_name": "Vasya",
-      "last_name": "Pupkin",
+      "first_name": "John",
+      "last_name": "Smith",
       "is_subscribed": false
     }
   ]
@@ -147,10 +147,10 @@ Example Request:
    
 ```json
 {
-  "email": "vpupkin@yandex.ru",
-  "username": "vasya.pupkin",
-  "first_name": "Vasya",
-  "last_name": "Pupkin",
+  "email": "vSmith@yandex.ru",
+  "username": "john.smith",
+  "first_name": "John",
+  "last_name": "Smith",
   "password": "Qwerty123"
 }
 ```
@@ -159,11 +159,11 @@ Example Response:
 
 ```json
 {
-  "email": "vpupkin@yandex.ru",
+  "email": "vSmith@yandex.ru",
   "id": 0,
-  "username": "vasya.pupkin",
-  "first_name": "Vasya",
-  "last_name": "Pupkin"
+  "username": "john.smith",
+  "first_name": "John",
+  "last_name": "Smith"
 }
 ```
 
@@ -178,8 +178,8 @@ Example Response:
   "email": "user@example.com",
   "id": 0,
   "username": "string",
-  "first_name": "Vasya",
-  "last_name": "Pupkin",
+  "first_name": "John",
+  "last_name": "Smith",
   "is_subscribed": false
 }
 ```
@@ -227,8 +227,8 @@ Example Response:
         "email": "user@example.com",
         "id": 0,
         "username": "string",
-        "first_name": "Vasya",
-        "last_name": "Pupkin",
+        "first_name": "John",
+        "last_name": "Smith",
         "is_subscribed": false
       },
       "ingredients": [
@@ -292,8 +292,8 @@ Example Response:
     "email": "user@example.com",
     "id": 0,
     "username": "string",
-    "first_name": "Vasya",
-    "last_name": "Pupkin",
+    "first_name": "John",
+    "last_name": "Smith",
     "is_subscribed": false
   },
   "ingredients": [
